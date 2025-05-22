@@ -1,0 +1,135 @@
+:root {
+    --primary-color: #1e88e5;
+    --success-color: #43a047;
+    --error-color: #e53935;
+    --background-color: #f5f5f5;
+    --card-background: #ffffff;
+    --text-color: #333333;
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#connection-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+#connection-status.connected {
+    background-color: var(--success-color);
+    color: white;
+}
+
+#connection-status.disconnected {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.events-container {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#events-list {
+    list-style: none;
+}
+
+.event-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid #eee;
+    transition: transform 0.2s;
+}
+
+.event-item:hover {
+    transform: translateX(5px);
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.event-type {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.event-time {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.event-details {
+    margin: 10px 0;
+}
+
+.address {
+    font-family: monospace;
+    background: #f5f5f5;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.tx-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.tx-link:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .event-header {
+        flex-direction: column;
+    }
+}
+    

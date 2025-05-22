@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ethereum Network Explorer</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar Navigation -->
+      <div class="sidebar">
+        <div class="logo">
+          <img src="ethereum-logo.svg" alt="Ethereum Logo" width="40">
+          <h2>ETH Explorer</h2>
+        </div>
+        
+        <nav class="toolbar">
+          <ul>
+            <li><a href="#" class="active" data-type="all">All Activity</a></li>
+            <li><a href="#" data-type="ENS_Registration">ENS Names</a></li>
+            <li><a href="#" data-type="ERC20_Transfer">Token Transfers</a></li>
+            <li><a href="#" data-type="smart-contracts">Smart Contracts</a></li>
+            <li><a href="#" data-type="marketplaces">Marketplaces</a></li>
+          </ul>
+        </nav>
+
+        <div class="network-status">
+          <div id="connection-status">Connecting...</div>
+          <div id="block-number"></div>
+          <div id="gas-price"></div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="content">
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <input type="text" placeholder="Search by ENS name, address, or transaction hash">
+          <button>Search</button>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-panel">
+          <div class="stat-card">
+            <h3>ENS Registrations</h3>
+            <span id="ens-count">0</span>
+            <small>Last 24h</small>
+          </div>
+          <div class="stat-card">
+            <h3>Token Transfers</h3>
+            <span id="transfer-count">0</span>
+            <small>> 10 tokens</small>
+          </div>
+          <div class="stat-card">
+            <h3>Total Value</h3>
+            <span id="total-value">0 ETH</span>
+            <small>All transfers</small>
+          </div>
+        </div>
+
+        <!-- Main Activity Feed -->
+        <div class="events-container">
+          <div class="events-header">
+            <h2>Live Network Activity</h2>
+            <div class="events-controls">
+              <button id="pause-btn" class="control-btn">Pause</button>
+              <select id="limit-select" class="control-select">
+                <option value="50">Last 50</option>
+                <option value="100" selected>Last 100</option>
+                <option value="200">Last 200</option>
+              </select>
+            </div>
+          </div>
+          <ul id="events-list" class="activity-list"></ul>
+        </div>
+
+        <!-- Recent Registrations -->
+        <div class="recent-registrations">
+          <h2>Recent ENS Registrations</h2>
+          <div class="registration-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel hidden" id="settings-panel">
+      <div class="settings-header">
+        <h3>Settings</h3>
+        <button class="close-btn">×</button>
+      </div>
+      <div class="settings-content">
+        <div class="setting-item">
+          <label for="min-value">Minimum Token Value</label>
+          <input type="number" id="min-value" value="10" min="0">
+        </div>
+        <div class="setting-item">
+          <label for="auto-refresh">Auto Refresh</label>
+          <input type="checkbox" id="auto-refresh" checked>
+        </div>
+        <div class="setting-item">
+          <label for="theme-select">Theme</label>
+          <select id="theme-select">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="system">System</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification" class="notification hidden"></div>
+
+    <!-- Templates -->
+    <template id="event-template">
+      <li class="event-item">
+        <div class="event-header">
+          <span class="event-type"></span>
+          <span class="event-time"></span>
+        </div>
+        <div class="event-details"></div>
+        <div class="event-footer">
+          <a class="tx-link" target="_blank">View on Etherscan</a>
+          <button class="copy-btn">Copy</button>
+        </div>
+      </li>
+    </template>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+    <script>
+      // Initialize UI components
+      document.addEventListener('DOMContentLoaded', () => {
+        // Theme handling
+        const themeSelect = document.getElementById('theme-select');
+        themeSelect.addEventListener('change', (e) => {
+          document.body.className = e.target.value;
+          localStorage.setItem('theme', e.target.value);
+        });
+
+        // Navigation handling
+        document.querySelectorAll('.toolbar a').forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.toolbar a').forEach(a => a.classList.remove('active'));
+            e.target.classList.add('active');
+            filterEvents(e.target.dataset.type);
+          });
+        });
+
+        // Settings panel
+        const settingsBtn = document.createElement('button');
+        settingsBtn.id = 'settings-toggle';
+        settingsBtn.innerHTML = '⚙️';
+        document.body.appendChild(settingsBtn);
+
+        settingsBtn.addEventListener('click', () => {
+          document.getElementById('settings-panel').classList.toggle('hidden');
+        });
+
+        // Initialize other controls
+        initializeControls();
+      });
+
+      function initializeControls() {
+        // Pause functionality
+        let isPaused = false;
+        document.getElementById('pause-btn').addEventListener('click', (e) => {
+          isPaused = !isPaused;
+          e.target.textContent = isPaused ? 'Resume' : 'Pause';
+          e.target.classList.toggle('paused');
+        });
+
+        // Event limit handling
+        document.getElementById('limit-select').addEventListener('change', (e) => {
+          window.maxEvents = parseInt(e.target.value);
+          trimEventsList();
+        });
+      }
+    </script>
+  </body>
+</html>

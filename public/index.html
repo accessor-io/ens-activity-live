@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereum Network Explorer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="sidebar">
+            <div class="logo">
+                <h2>ETH Explorer</h2>
+            </div>
+            <nav class="toolbar">
+                <ul>
+                    <li><a href="#" class="active" data-type="all">All Activity</a></li>
+                    <li><a href="#" data-type="ENS_Registration">ENS Names</a></li>
+                    <li><a href="#" data-type="ERC20_Transfer">Token Transfers</a></li>
+                </ul>
+            </nav>
+            <div class="network-status">
+                <div id="connection-status">Connecting...</div>
+                <div id="block-number"></div>
+                <div id="gas-price"></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="stats-panel">
+                <div class="stat-card">
+                    <h3>ENS Registrations</h3>
+                    <span id="ens-count">0</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Token Transfers</h3>
+                    <span id="transfer-count">0</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Value</h3>
+                    <span id="total-value">0 ETH</span>
+                </div>
+            </div>
+
+            <div class="events-container">
+                <div class="events-header">
+                    <h2>Live Network Activity</h2>
+                    <div class="controls">
+                        <button id="pause-btn">Pause</button>
+                        <select id="limit-select">
+                            <option value="50">50 Events</option>
+                            <option value="100" selected>100 Events</option>
+                            <option value="200">200 Events</option>
+                        </select>
+                    </div>
+                </div>
+                <ul id="events-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
